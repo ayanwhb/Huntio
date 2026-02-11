@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "rootDir": "./src",
+    "outDir": "./dist",
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
+    "target": "esnext",
+    "sourceMap": false
+  },
+  "include": ["src/**/*.ts", "src/types/**/*.d.ts"],
+  "exclude": ["node_modules"]
+}

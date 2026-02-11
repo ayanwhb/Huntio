@@ -1,0 +1,70 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id             String           @id @default(uuid())
+  email          String           @unique
+  username       String
+  firstname      String?
+  hashedPassword String
+  applications   JobApplication[]
+  refreshTokens  RefreshToken[]
+
+  createdAt DateTime @default(now()) @db.Timestamptz
+  updatedAt DateTime @updatedAt @db.Timestamptz
+}
+
+model RefreshToken {
+  id   String @id @default(uuid())
+  hash String @unique
+  jti  String @unique
+
+  createdAt DateTime @default(now()) @db.Timestamptz
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String @unique
+}
+
+model JobApplication {
+  id          String               @id @default(uuid())
+  companyName String
+  jobTitle    String
+  salary      Int
+  status      JobApplicationStatus @default(PENDING)
+  workModel   WorkModel
+
+  createdAt DateTime @default(now()) @db.Timestamptz
+  updatedAt DateTime @updatedAt @db.Timestamptz
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String
+}
+
+enum JobApplicationStatus {
+  PENDING
+  APPLIED
+  SHORTLISTED
+  INTERVIEW
+  REJECTED
+  NO_RESPONSE
+  WITHDRAWN
+  OFFER
+}
+
+enum WorkModel {
+  ONSITE
+  HYBRID
+  REMOTE
+}
